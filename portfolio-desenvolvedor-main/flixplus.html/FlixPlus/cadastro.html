@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro FlixBox</title>
+    <style>
+        *{
+            margin: 0%;
+            padding: 0%;
+            box-sizing: border-box;
+        }
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            background-image: url("IMG/1.png");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+         img{
+             width: 300px;
+            margin: 0;
+        }
+        .tudo{
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: white;
+        }
+        header{
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: rgb(10, 3, 117);
+            background-image: linear-gradient(180deg, #001f65, #6895fd);
+            border: 1px solid white;
+            -webkit-text-stroke:  1px white;
+            text-shadow:  0 2px 5px black;
+        }
+        header>h1{
+            text-align: center;
+        }
+        main{
+            border: 1px solid black;
+        }
+        input[type="text"]{
+            border: 1px solid rgba(255, 255, 255, 0);
+            border-radius: 10px;
+            padding: 15px 50px;
+            background: rgba(0, 0, 0, 0.399);
+            color: white;
+        }
+        input[type='email']{
+            border: 1px solid rgba(255, 255, 255, 0);
+            border-radius: 10px;
+            padding: 15px 50px;
+            background: rgba(0, 0, 0, 0.399);
+            color: white;
+        }
+        input[type='email']:hover{
+             cursor: pointer;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0);
+            padding: 20px;
+            background: rgba(253, 253, 253, 0.399);
+            color: rgb(0, 0, 0);
+        }
+        input[type="password"]{
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0);
+            padding: 15px 50px;
+            background: rgba(0, 0, 0, 0.399);
+            color: white;
+        }
+        input[type="password"]:hover{
+            cursor: pointer;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0);
+            padding: 20px;
+            background: rgba(253, 253, 253, 0.399);
+            color: rgb(0, 0, 0);
+        }
+        input[type="text"]:hover{
+            cursor: pointer;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0);
+            padding: 20px;
+            background: rgba(253, 253, 253, 0.399);
+            color: rgb(0, 0, 0);
+        }
+        .bordas>[type="submit"]:hover{
+            cursor: pointer;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0);
+             padding-bottom: 20px;
+            padding-top: 25px;
+            padding-left: 50px;
+            padding-right: 50px;
+            background: rgba(253, 253, 253, 0.399);
+            color: rgb(0, 0, 0);
+        }
+        .bordas>input[type="submit"]{
+            text-decoration: none;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0);
+            padding-bottom: 20px;
+            padding-top: 25px;
+            padding-left: 50px;
+            padding-right: 50px;
+            background: rgba(0, 0, 0, 0.399);
+            color: white;
+        }
+        .bordas>a{
+            text-decoration: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        ::placeholder{
+            color: white;
+        }
+        .quadro{
+            padding-top: 30px;
+            padding-bottom: 50px;
+            padding-right: 200px;
+            padding-left: 200px;
+            display: flex;
+            box-shadow:  0 3px 4px white;
+            border: 1px solid white;
+            border-radius: 10px;
+            background-image: linear-gradient(180deg, #001f65, #6895fd);
+            flex-direction: column;
+        }
+        .quadro>.bordas>label{
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            color: white;
+        }
+        .bordas{
+            gap: 9px;
+            display: flex;
+            flex-direction: column;
+        }
+         .logo-container { /* Novo contêiner para a imagem */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #genero{
+            border: 1px solid rgba(255, 255, 255, 0);
+            border-radius: 10px;
+            padding: 15px 50px;
+            background: rgba(0, 0, 0, 0.399);
+            color: white;
+        }
+        #genero:hover{
+            border: 1px solid rgba(255, 255, 255, 0);
+            border-radius: 10px;
+            padding: 15px 50px;
+            background: rgba(4, 49, 200, 0.804);
+            color: white; 
+        }
+        #termos{
+            width: auto;
+            margin-right: 8px;
+        }
+        .login{
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            color: white;
+        }
+        .login>a{
+            text-decoration: none;
+            color: white;
+            display: inline-block;
+            margin-top: 20px;
+            background-image: linear-gradient(to right, #001f65, white); 
+            background-size: 0% 2px;
+            background-repeat: no-repeat;
+            background-position: left bottom;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-size 0.5s ease-in-out, transform 0.5s ease-in-out; 
+        }
+        .login>a:hover{
+             background-size: 100% 2px;
+            transform: scale(1.10);
+            color: black;
+            -webkit-text-stroke: 0.4px rgb(156, 138, 138); 
+        }
+    </style>
+</head>
+<body>
+      <div class="tudo">
+        <header>
+            <h1>
+                Seja bem vindo(a) a FlixBox
+            </h1>
+        </header>
+        <form action="login.html">
+            <main class="quadro">
+                <div class="bordas">
+                    <div class="logo-container">
+                <img src="IMG/logo.png" alt="logo">
+                </div>
+                <label for="login_nome"> Digite seu nome de usuário:</label>
+                <input type="text" name="nome" id="login_nome" placeholder="Digite seu nome de usuário..." required>
+                <label for="emil">Digite seu email:</label>
+                <input type="email" name="emia" id="emil" placeholder="Digite seu email..." required>
+                <label for="login_senha">Digite sua senha:</label>
+                <input type="password" name="senha" id="login_senha" placeholder="Digite sua senha..." required>
+                <label for="login_senha_confirm">Confirme sua senha:</label>
+                <input type="password" name="senha" id="login_senha_confirm" placeholder="Confirme sua senha..." required>
+                <label for="genero"></label>
+                <select name="genero" id="genero" required>
+                    <option value="slecione" selected disabled>Selecione</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="
+                    feminino">Feminino</option>
+                    <option value="outros">outros</option>
+                </select>
+                <label for="termos">
+                    <input type="checkbox" id="termos" name="termos" required>Aceito os <a href="termos_e_condicoes.html">termos</a> e <a href="termos_e_condicoes.html">condições</a>.
+                </label>
+                <input type="submit" name="linkk" id="link" placeholder="Clique Aqui">
+                <p class="login">Já tem cadastro? Faça <a href="login.html">login</a>.</p>
+                </div>
+            </main> 
+        </form>
+    </div>
+</body>
+</html>

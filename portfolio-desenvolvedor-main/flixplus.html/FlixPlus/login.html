@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlixBox</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            /* Se "IMG/1.png" não for uma imagem escura, você pode precisar de um overlay */
+            background-image: url("IMG/1.png"); 
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        /* * Corrigido: Estilos para elementos específicos do cabeçalho e logo
+         */
+        .tudo {
+            /* Removido background-color: white; e font-family daqui */
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            /* Corrigido: Aplicando o gradiente ao cabeçalho (apenas estilos visuais) */
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: rgb(10, 3, 117);
+            background-image: linear-gradient(180deg, #001f65, #6895fd);
+            border: 1px solid white;
+            -webkit-text-stroke: 1px white;
+            text-shadow: 0 2px 5px black;
+        }
+        header > h1 {
+            text-align: center;
+            padding: 10px 0; /* Adicionado padding para melhor visualização */
+        }
+        .logo-container { /* Novo contêiner para a imagem */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .logo-container > img {
+            width: 300px;
+            margin: 0; /* Removido margin-left: 60px; */
+            /* Removido o display/justify/align repetido no CSS da imagem */
+        }
+
+        /* * Estilização do Quadro/Formulário 
+         */
+        .quadro {
+            padding: 30px 200px 50px;
+            display: flex;
+            box-shadow: 0 3px 4px white;
+            border: 1px solid white;
+            border-radius: 10px;
+            background-image: linear-gradient(180deg, #001f65, #6895fd);
+            flex-direction: column;
+        }
+        .bordas {
+            gap: 9px;
+            display: flex;
+            flex-direction: column;
+        }
+        .quadro > .bordas > label {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            color: white;
+        }
+
+        /* * Estilização de Inputs (Campos de Texto/Senha) 
+         */
+        input[type="text"], 
+        input[type="password"] {
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0);
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.399);
+            color: white;
+            /* Adicionada transição para o hover */
+            transition: background 0.3s ease, color 0.3s ease; 
+        }
+        /* Corrigido: Removida a estilização duplicada do :required, que não era necessária */
+        input[type="text"]:hover, 
+        input[type="password"]:hover {
+            cursor: pointer;
+            background: rgba(253, 253, 253, 0.399);
+            color: rgb(0, 0, 0);
+        }
+        ::placeholder {
+            color: white;
+        }
+
+        /* * Estilização do Botão de Envio (Submit)
+         */
+        .bordas > input[type="submit"] {
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0);
+            padding: 15px 50px; /* Padding simplificado */
+            background: rgba(0, 0, 0, 0.399);
+            color: white;
+            font-size: 16px;
+            margin-top: 15px; /* Separar um pouco dos inputs */
+            transition: background 0.3s ease, color 0.3s ease, padding 0.3s ease;
+        }
+        .bordas > input[type="submit"]:hover {
+            cursor: pointer;
+            background: rgba(253, 253, 253, 0.399);
+            color: rgb(0, 0, 0);
+            padding: 20px 50px; /* Efeito de 'crescimento' mais sutil */
+        }
+        
+        /* * Estilização do Link (A) de Cadastro (CORREÇÃO DA ANIMAÇÃO)
+         */
+        .link-cadastro {
+            text-decoration: none;
+            display: inline-block; /* Para garantir que o hover funcione apenas no texto */
+            margin-top: 20px; /* Separar do quadro */
+            
+            /* Configuração do Sublinhado Animado (Usando a técnica background-size) */
+            background-image: linear-gradient(to right, white, white); 
+            background-size: 0% 2px; /* Largura 0%, Altura 2px */
+            background-repeat: no-repeat;
+            background-position: left bottom; 
+
+            color: white; /* Cor do texto padrão */
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 15px;
+            cursor: pointer;
+            
+            /* Transição para o sublinhado (background-size) e o zoom (transform) */
+            transition: background-size 0.5s ease-in-out, transform 0.5s ease-in-out; 
+        }
+        
+        .link-cadastro:hover {
+            background-size: 100% 2px; /* A linha aparece */
+            transform: scale(1.1); /* O texto aumenta */
+            color: black; /* Opcional: muda a cor do texto no hover */
+            -webkit-text-stroke: 0.4px rgb(156, 138, 138); /* Mantido para o efeito visual */
+            
+        }
+
+        /* Removida a regra a > p e a > p:hover pois a animação deve estar na tag <a> */
+    </style>
+</head>
+<body>
+    <div class="tudo">
+        <header>
+            <h1>Seja bem vindo(a) a FlixBox</h1>
+        </header>
+
+        <form class="formulario quadro" action="contas.html">
+            
+            <div class="logo-container">
+                <img src="IMG/logo.png" alt="logo">
+            </div>
+
+            <div class="bordas">
+                <label for="login_nome">Digite seu email ou seu nome de usuário:</label>
+                <input type="text" name="nome" id="login_nome" placeholder="Digite seu nome de usuário..." required>
+                
+                <label for="login_senha">Digite sua senha:</label>
+                <input type="password" name="senha" id="login_senha" placeholder="Digite sua senha..." required>
+                
+                <input type="submit" value="Acessar Catálogo" name="linkk" id="link">
+            </div>
+            
+
+                <p>
+                    Não tem login? Se <a class="link-cadastro" href="cadastro.html">cadastre</a> agora
+                </p>
+            
+        </form> 
+    </div>
+</body>
+</html>

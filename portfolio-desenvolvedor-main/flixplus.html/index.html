@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlixBox - Streaming Completo com Modal CSS</title>
+
+    <style>
+    
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0b1b36;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .app {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 130px;
+            background: linear-gradient(180deg, #001f65, #6895fd);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 25px 0;
+            gap: 25px;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.4);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+
+        .sidebar nav {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            width: 100%;
+        }
+
+        .menu-item {
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #e0ecff;
+            background: rgba(255,255,255,0.1);
+            padding: 12px 15px;
+            border-radius: 12px;
+            width: 90%;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-item:hover {
+            background: rgba(255,255,255,0.25);
+            transform: scale(1.08);
+            box-shadow: 0 0 10px rgba(255,255,255,0.2);
+            color: #ffffff;
+        }
+
+        .main {
+            flex: 1;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        .banner {
+            height: 300px;
+            position: relative;
+            border-bottom: 3px solid #1c3a70;
+            overflow: hidden;
+        }
+
+        .slides {
+            display: flex;
+            width: 500%;
+            height: 100%;
+            transition: transform 0.5s ease;
+        }
+
+        #s1:checked ~ .slides { transform: translateX(0%); }
+        #s2:checked ~ .slides { transform: translateX(-20%); }
+        #s3:checked ~ .slides { transform: translateX(-40%); }
+        #s4:checked ~ .slides { transform: translateX(-60%); }
+        #s5:checked ~ .slides { transform: translateX(-80%); }
+
+        .slide {
+            width: 20%;
+            flex-shrink: 0;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .navegacao {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .navegacao label {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer; 
+            box-shadow: 0 0 3px rgba(0,0,0,0.5);
+            transition: 0.3s;
+        }
+
+        #s1:checked ~ .navegacao label[for="s1"],
+        #s2:checked ~ .navegacao label[for="s2"],
+        #s3:checked ~ .navegacao label[for="s3"],
+        #s4:checked ~ .navegacao label[for="s4"],
+        #s5:checked ~ .navegacao label[for="s5"] {
+            background: #6895fd; 
+            transform: scale(1.2);
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        .banner::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(11,27,54,1), rgba(11,27,54,0));
+            z-index: 2;
+        }
+
+        .banner-text {
+            position: absolute;
+            bottom: 40px;
+            left: 20px;
+            z-index: 3;
+        }
+
+        .banner-text h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .banner-text p {
+            font-size: 16px;
+            color: #d4e0ff;
+        }
+
+        /* SEÇÕES DE FILMES */
+        section {
+            padding: 25px 20px;
+        }
+
+        section h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: #cfe6ff;
+        }
+
+        .scroll-row {
+            display: flex;
+            gap: 14px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+        }
+
+        .scroll-row::-webkit-scrollbar { height: 8px; }
+        .scroll-row::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+        }
+
+        /* CARD */
+        .card-container {
+            flex: 0 0 150px;
+            position: relative;
+        }
+        
+        .card {
+            display: block; 
+            border-radius: 10px;
+            overflow: hidden;
+            background: #122b52;
+            transition: 0.3s;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .card-container:hover .card {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+        }
+
+        .card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .card p {
+            padding: 8px;
+            font-size: 13px;
+            text-align: center;
+            color: #dfe9ff;
+        }
+
+        /* RODAPÉ */
+        footer {
+            background: linear-gradient(to right, #0d2a4f, #183b7a, #0d2a4f);
+            text-align: center;
+            padding: 20px 20px;
+            color: #cde0ff;
+            font-size: 14px;
+            border-top: 2px solid #1a4b8c;
+        }
+
+        footer span {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        /* RESPONSIVO */
+        @media (max-width: 768px) {
+            .sidebar { width: 90px; }
+            .logo { font-size: 20px; }
+            .menu-item {
+                font-size: 11px;
+                padding: 8px 10px;
+            }
+        }
+
+        /* ======================================= */
+        /* ======== ESTILOS DO MODAL (PURO CSS) ======== */
+        /* ======================================= */
+
+        /* O checkbox que controla o estado do modal */
+        .modal-toggle {
+            display: none;
+        }
+
+        /* Estrutura do Modal (Plano de Fundo Escuro) */
+        .modal-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* O Conteúdo Real do Modal */
+        .modal-content {
+            background-color: #0b1b36;
+            color: white;
+            border: 3px solid #6895fd;
+            border-radius: 15px;
+            padding: 20px;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            position: relative; 
+            transform: scale(0.9);
+            transition: transform 0.3s;
+            cursor: default; 
+        }
+
+        /* Estilo para o LABEL que cobre o background para fechar */
+        /* Usamos um label para fechar o modal ao clicar fora do conteúdo */
+        /* Esta regra deve ser aplicada a um elemento que cubra o fundo e desmarque o checkbox */
+        .modal-background label {
+            /* Certifica-se de que o rótulo de fechar ao fundo não interfira no conteúdo do modal */
+            position: absolute;
+            inset: 0; /* Cobre todo o background */
+            cursor: pointer;
+            z-index: -1; /* Fica abaixo do .modal-content */
+        }
+
+        /* Estado ATIVO do Modal (Gatilho: quando o checkbox está marcado) */
+        .modal-toggle:checked ~ .modal-background {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Animação do Conteúdo quando o modal é aberto */
+        .modal-toggle:checked ~ .modal-background .modal-content {
+            transform: scale(1);
+        }
+
+        /* Botão de Fechar: um LABEL que aponta para o checkbox para desmarcá-lo */
+        .close-button {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            line-height: 30px;
+            transition: 0.2s;
+            position: absolute; 
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+        }
+
+        .close-button:hover {
+            background: #e60000;
+            transform: rotate(90deg);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #1c3a70;
+            padding-bottom: 10px;
+        }
+
+        .modal-header h2 {
+            font-size: 28px;
+            color: #fff;
+            margin: 0;
+            max-width: 80%; /* Para não colidir com o botão de fechar */
+        }
+
+        .modal-body-details {
+            display: flex;
+            gap: 20px;
+        }
+
+        .modal-poster {
+            flex-shrink: 0;
+            width: 150px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-poster img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .modal-details {
+            flex-grow: 1;
+        }
+
+        .modal-genre {
+            display: inline-block;
+            background-color: #6895fd;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .modal-sinopse {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #cde0ff;
+        }
+
+        /* Responsividade para o modal */
+        @media (max-width: 600px) {
+            .modal-content {
+                max-width: 95%;
+                padding: 15px;
+            }
+            .modal-body-details {
+                flex-direction: column;
+                align-items: center;
+            }
+            .modal-poster {
+                width: 70%;
+                max-width: 250px;
+                margin-bottom: 15px;
+            }
+            .modal-header {
+                text-align: center;
+                flex-direction: column;
+                align-items: center;
+            }
+            .modal-header h2 {
+                font-size: 24px;
+                margin-bottom: 10px;
+            }
+            .modal-genre {
+                margin-top: 5px;
+            }
+            .close-button {
+                top: 5px;
+                right: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app">
+        <aside class="sidebar">
+            <div class="logo">FlixBox</div> 
+            <nav>
+                <ul>
+                    <li class="menu-item">Início</li>
+                    <li class="menu-item">Busca</li>
+                    <li class="menu-item">Filmes</li>
+                    <li class="menu-item">Favoritos</li>
+                    <li class="menu-item">Config.</li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="main">
+            <div class="banner">
+                <input type="radio" name="slide" id="s1" checked>
+                <input type="radio" name="slide" id="s2">
+                <input type="radio" name="slide" id="s3">
+                <input type="radio" name="slide" id="s4">
+                <input type="radio" name="slide" id="s5">
+
+                <div class="slides">
+                    <div class="slide"><img src="imG/maze-runner.avif" alt="Maze Runner"></div>
+                    <div class="slide"><img src="imG/bad boys horizontal.jpg" alt="Bad Boys"></div>
+                    <div class="slide"><img src="imG/ritmo de fuga.jpg" alt="Ritmo de fuga"></div>
+                    <div class="slide"><img src="imG/madmax horizon.webp" alt="mad max"></div>
+                    <div class="slide"><img src="imG/john_wick_4_capa__k70cyzr.jpg" alt="Jhon wick"></div>
+                </div>
+
+                <div class="banner-text">
+                    <h1>Filmes em Destaque</h1>
+                    <p>Assista agora o sucesso do momento com qualidade premium.</p>
+                </div>
+
+                <div class="navegacao">
+                    <label for="s1" title="Slide 1"></label>
+                    <label for="s2" title="Slide 2"></label>
+                    <label for="s3" title="Slide 3"></label>
+                    <label for="s4" title="Slide 4"></label>
+                    <label for="s5" title="Slide 5"></label>
+                </div>
+            </div>
+
+            <p id="sinopse-padrao" style="display: none;">
+                A vida de [NOME DO FILME] sai do controle quando algo inesperado acontece. Para resolver a situação, o protagonista deve enfrentar grandes desafios.
+            </p>
+            
+            <section>
+                <h2>Romance</h2>
+                <div class="scroll-row">
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-romance-1" class="modal-toggle">
+                        <label for="modal-romance-1" class="card">
+                            <img src="imG/To_All_the_Boys_I_ve_Loved_Before_poster.jpg" alt="Para Todos os Garotos">
+                            <p>Para Todos os Garotos</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-romance-1"></label> 
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Para Todos os Garotos que Já Amei</h2>
+                                    <label for="modal-romance-1" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/To_All_the_Boys_I_ve_Loved_Before_poster.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Romance Adolescente, Comédia</div>
+                                        <p class="modal-sinopse">A vida amorosa de Lara Jean Song Covey sai do controle quando as cartas secretas que ela escreveu para todos os seus crushes são misteriosamente enviadas. Para resolver a situação, ela entra em um namoro de mentira com um dos garotos.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-romance-2" class="modal-toggle">
+                        <label for="modal-romance-2" class="card">
+                            <img src="imG/orgulho e preconceito .webp" alt="Orgulho e Preconceito">
+                            <p>Orgulho e Preconceito</p>
+                        </label>
+                        <div class="modal-background">
+                             <label for="modal-romance-2"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Orgulho e Preconceito</h2>
+                                    <label for="modal-romance-2" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/orgulho e preconceito .webp" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Romance, Drama Histórico</div>
+                                        <p class="modal-sinopse">Em 1797, na Inglaterra, Elizabeth Bennet (Keira Knightley) é uma das cinco filhas de uma família modesta. A chegada de dois jovens aristocratas à vizinhança, o charmoso Bingley e o orgulhoso Darcy, vira sua vida de cabeça para baixo.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-romance-3" class="modal-toggle">
+                        <label for="modal-romance-3" class="card">
+                            <img src="imG/The_Fault_in_Our_Stars_(filme).jpg" alt="A Culpa é das Estrelas">
+                            <p>A Culpa é das Estrelas</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-romance-3"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>A Culpa é das Estrelas</h2>
+                                    <label for="modal-romance-3" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/The_Fault_in_Our_Stars_(filme).jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Romance, Drama</div>
+                                        <p class="modal-sinopse">Hazel Grace Lancaster (Shailene Woodley) e Augustus Waters (Ansel Elgort) são dois adolescentes que se apaixonam após se conhecerem em um Grupo de Apoio a Crianças com Câncer. Eles embarcam em uma jornada inesquecível.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-romance-4" class="modal-toggle">
+                        <label for="modal-romance-4" class="card">
+                            <img src="imG/Di´rio de uma paixão.jpg" alt="Diário de uma Paixão">
+                            <p>Diário de uma Paixão</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-romance-4"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Diário de uma Paixão</h2>
+                                    <label for="modal-romance-4" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/Di´rio de uma paixão.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Romance, Drama</div>
+                                        <p class="modal-sinopse">Em 1940, na Carolina do Sul, o pobre operário Noah Calhoun e a rica Allie Hamilton se apaixonam perdidamente durante um verão, mas são separados pelas diferenças sociais e pela Segunda Guerra Mundial.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-romance-5" class="modal-toggle">
+                        <label for="modal-romance-5" class="card">
+                            <img src="imG/Brilho eterno de uma mente .jpg" alt="Eterno brilho de uma mente sem lembranças">
+                            <p>Eterno brilho de uma mente sem lembranças</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-romance-5"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Brilho Eterno de uma Mente sem Lembranças</h2>
+                                    <label for="modal-romance-5" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/Brilho eterno de uma mente .jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Romance, Ficção Científica</div>
+                                        <p class="modal-sinopse">Joel (Jim Carrey) fica arrasado ao descobrir que sua namorada Clementine (Kate Winslet) se submeteu a um procedimento para apagar todas as memórias dele. Ele decide fazer o mesmo, mas começa a ter dúvidas durante o processo.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-romance-6" class="modal-toggle">
+                        <label for="modal-romance-6" class="card">
+                            <img src="imG/Just_Go_with_it_Pôster.jpg" alt="Esposa de Mentirinha">
+                            <p>Esposa de Mentirinha</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-romance-6"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Esposa de Mentirinha</h2>
+                                    <label for="modal-romance-6" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/Just_Go_with_it_Pôster.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Romance, Comédia</div>
+                                        <p class="modal-sinopse">Um cirurgião plástico, para conquistar uma jovem, pede à sua assistente, Katherine, para fingir ser sua ex-esposa. O que começa como uma mentira inocente se transforma em uma viagem de férias insana com toda a família.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-romance-7" class="modal-toggle">
+                        <label for="modal-romance-7" class="card">
+                            <img src="imG/todos menos vc.jpg" alt="Todos menos você">
+                            <p>Todos menos você</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-romance-7"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Todos Menos Você</h2>
+                                    <label for="modal-romance-7" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/todos menos vc.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Comédia Romântica</div>
+                                        <p class="modal-sinopse">Bea e Ben, após um encontro incrível que termina mal, se reencontram em um casamento na Austrália. Eles fingem ser um casal para evitar problemas com seus ex e famílias, mas a farsa logo se torna um desafio.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-romance-8" class="modal-toggle">
+                        <label for="modal-romance-8" class="card">
+                            <img src="imG/10 coisas que odeio em vc.jpg" alt="10 coisas que odeio em você">
+                            <p>10 coisas que odeio em você</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-romance-8"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>10 Coisas que Eu Odeio em Você</h2>
+                                    <label for="modal-romance-8" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/10 coisas que odeio em vc.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Romance Adolescente, Comédia</div>
+                                        <p class="modal-sinopse">Em uma adaptação moderna de Shakespeare, um garoto só pode namorar a popular Bianca se conseguir um par para sua irmã mais velha e geniosa, Kat. Ele paga o misterioso Patrick Verona para cortejá-la.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-romance-9" class="modal-toggle">
+                        <label for="modal-romance-9" class="card">
+                            <img src="imG/como perder um homem em 10 dias.webp" alt="Como perder um homem em 10 dias">
+                            <p>Como perder um homem em 10 dias</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-romance-9"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Como Perder um Homem em 10 Dias</h2>
+                                    <label for="modal-romance-9" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/como perder um homem em 10 dias.webp" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Comédia Romântica</div>
+                                        <p class="modal-sinopse">Uma jornalista escreve um artigo sobre como afastar um homem em 10 dias. Paralelamente, um publicitário aposta que pode fazer uma mulher se apaixonar por ele em 10 dias. Seus caminhos se cruzam.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-romance-10" class="modal-toggle">
+                        <label for="modal-romance-10" class="card">
+                            <img src="imG/como eu era antes de vc.jpg" alt="Como eu era antes de você">
+                            <p>Como eu era antes de você</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-romance-10"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Como Eu Era Antes de Você</h2>
+                                    <label for="modal-romance-10" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/como eu era antes de vc.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Romance, Drama</div>
+                                        <p class="modal-sinopse">Louisa Clark (Emilia Clarke) é contratada para ser cuidadora de Will Traynor (Sam Claflin), um jovem rico e tetraplégico que ficou amargurado após um acidente. O relacionamento dos dois se transforma em algo profundo e inesperado.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>Ação</h2>
+                <div class="scroll-row">
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-acao-1" class="modal-toggle">
+                        <label for="modal-acao-1" class="card">
+                            <img src="imG/Mission_Impossible_–_Dead_Reckoning_Part_One.jpg" alt="Missão: Impossível">
+                            <p>Missão: Impossível</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-acao-1"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Missão: Impossível - Acerto de Contas Parte Um</h2>
+                                    <label for="modal-acao-1" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/Mission_Impossible_–_Dead_Reckoning_Part_One.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Ação, Espionagem</div>
+                                        <p class="modal-sinopse">Ethan Hunt (Tom Cruise) e sua equipe embarcam em sua missão mais perigosa até hoje para rastrear uma nova e aterrorizante arma que ameaça toda a humanidade.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-acao-2" class="modal-toggle">
+                        <label for="modal-acao-2" class="card">
+                            <img src="imG/vingadores.jpg" alt="Vingadores">
+                            <p>Vingadores</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-acao-2"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Vingadores: Ultimato</h2>
+                                    <label for="modal-acao-2" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/vingadores.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Ação, Super-Herói</div>
+                                        <p class="modal-sinopse">Os heróis restantes se reúnem para reverter as ações de Thanos e restaurar a ordem no universo após a devastação causada por seu estalar de dedos.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-acao-3" class="modal-toggle">
+                        <label for="modal-acao-3" class="card">
+                            <img src="imG/Top_Gun_Maverick.jpg" alt="Top Gun: Maverick">
+                            <p>Top Gun: Maverick</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-acao-3"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Top Gun: Maverick</h2>
+                                    <label for="modal-acao-3" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/Top_Gun_Maverick.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Ação, Drama Militar</div>
+                                        <p class="modal-sinopse">Após mais de trinta anos de serviço, Pete "Maverick" Mitchell (Tom Cruise) deve treinar um destacamento de graduados da TOP GUN para uma missão especializada que piloto vivo jamais enfrentou.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-acao-4" class="modal-toggle">
+                        <label for="modal-acao-4" class="card">
+                            <img src="imG/Velozes_e_Furiosos_-_Capa.webp" alt="Velozes e Furiosos">
+                            <p>Velozes e Furiosos</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-acao-4"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Velozes e Furiosos</h2>
+                                    <label for="modal-acao-4" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/Velozes_e_Furiosos_-_Capa.webp" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Ação, Crime</div>
+                                        <p class="modal-sinopse">Um policial disfarçado se infiltra no mundo das corridas de rua ilegais em Los Angeles, onde se envolve com o líder de uma gangue suspeita de roubos de caminhões.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-acao-5" class="modal-toggle">
+                        <label for="modal-acao-5" class="card">
+                            <img src="imG/avatr caminho d'agua.jpg" alt="Avatar o caminho da água">
+                            <p>Avatar: o caminho da água</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-acao-5"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Avatar: O Caminho da Água</h2>
+                                    <label for="modal-acao-5" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/avatr caminho d'agua.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Ficção Científica, Aventura</div>
+                                        <p class="modal-sinopse">Jake Sully e Ney'tiri formaram uma família e estão fazendo de tudo para permanecerem juntos. No entanto, eles devem deixar seu lar e explorar as regiões de Pandora quando uma ameaça antiga ressurge.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-acao-6" class="modal-toggle">
+                        <label for="modal-acao-6" class="card">
+                            <img src="imG/Avatar-Teaser-Poster.jpg" alt="Avatar">
+                            <p>Avatar</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-acao-6"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Avatar</h2>
+                                    <label for="modal-acao-6" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/Avatar-Teaser-Poster.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Ficção Científica, Aventura</div>
+                                        <p class="modal-sinopse">Um fuzileiro naval paraplégico é enviado ao planeta Pandora em uma missão única, mas fica dividido entre seguir ordens e proteger o mundo que ele sente ser seu novo lar.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-acao-7" class="modal-toggle">
+                        <label for="modal-acao-7" class="card">
+                            <img src="imG/the boys.jpeg" alt="The boys">
+                            <p>The boys</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-acao-7"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>The Boys (Série)</h2>
+                                    <label for="modal-acao-7" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/the boys.jpeg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Ação, Comédia Sombria</div>
+                                        <p class="modal-sinopse">Um grupo de vigilantes se propõe a derrubar super-heróis corruptos que abusam de seus superpoderes em vez de usá-los para o bem.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-acao-8" class="modal-toggle">
+                        <label for="modal-acao-8" class="card">
+                            <img src="imG/Kingsman_The_Secret_Service_capa.jpg" alt="Kingsman">
+                            <p>Kingsman</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-acao-8"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Kingsman: Serviço Secreto</h2>
+                                    <label for="modal-acao-8" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/Kingsman_The_Secret_Service_capa.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Ação, Comédia</div>
+                                        <p class="modal-sinopse">Um jovem delinquente de Londres é recrutado para uma agência secreta de espionagem supersecreta, onde passa por um treinamento rigoroso para se tornar um Kingsman.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-acao-9" class="modal-toggle">
+                        <label for="modal-acao-9" class="card">
+                            <img src="imG/John_wick_ver3.jpg" alt="Jhon Wick">
+                            <p>Jhon Wick</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-acao-9"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>John Wick</h2>
+                                    <label for="modal-acao-9" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/John_wick_ver3.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Ação, Suspense</div>
+                                        <p class="modal-sinopse">O lendário assassino de aluguel John Wick (Keanu Reeves) se aposenta após encontrar o amor. Mas quando sua paz é interrompida, ele é forçado a voltar à ação para se vingar.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-acao-10" class="modal-toggle">
+                        <label for="modal-acao-10" class="card">
+                            <img src="imG/Homens_de_Preto.webp" alt="Homens de preto">
+                            <p>Homens de preto</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-acao-10"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Homens de Preto</h2>
+                                    <label for="modal-acao-10" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/Homens_de_Preto.webp" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Ação, Ficção Científica, Comédia</div>
+                                        <p class="modal-sinopse">Um policial (Will Smith) é recrutado por uma agência secreta para monitorar a atividade alienígena na Terra. Ele se junta ao Agente K (Tommy Lee Jones) para salvar o planeta de uma ameaça intergaláctica.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>Comédia</h2>
+                <div class="scroll-row">
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-comedia-1" class="modal-toggle">
+                        <label for="modal-comedia-1" class="card">
+                            <img src="imG/as branquelas.jpg" alt="As Branquelas">
+                            <p>As Branquelas</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-comedia-1"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>As Branquelas</h2>
+                                    <label for="modal-comedia-1" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/as branquelas.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Comédia</div>
+                                        <p class="modal-sinopse">Dois agentes do FBI (Shawn e Marlon Wayans) precisam proteger duas socialites e, para isso, se disfarçam como as próprias. O resultado é um festival de situações hilárias e embaraçosas.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-comedia-2" class="modal-toggle">
+                        <label for="modal-comedia-2" class="card">
+                            <img src="imG/gente grande .jpg" alt="Gente Grande">
+                            <p>Gente Grande</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-comedia-2"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Gente Grande</h2>
+                                    <label for="modal-comedia-2" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/gente grande .jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Comédia</div>
+                                        <p class="modal-sinopse">Cinco amigos de infância se reúnem com suas famílias no feriado de 4 de julho após a morte do técnico de basquete que os treinou quando eram crianças. Eles passam o fim de semana em uma casa no lago, revivendo velhos tempos.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-comedia-3" class="modal-toggle">
+                        <label for="modal-comedia-3" class="card">
+                            <img src="imG/Click_film.jpg" alt="Click">
+                            <p>Click</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-comedia-3"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Click</h2>
+                                    <label for="modal-comedia-3" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/Click_film.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Comédia, Fantasia, Drama</div>
+                                        <p class="modal-sinopse">Um arquiteto viciado em trabalho (Adam Sandler) ganha um controle remoto universal que lhe permite avançar e retroceder no tempo. Mas a conveniência logo se torna um desastre em sua vida.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-comedia-4" class="modal-toggle">
+                        <label for="modal-comedia-4" class="card">
+                            <img src="imG/ZootopiaOficialPoster.jpg" alt="Zootopia">
+                            <p>Zootopia</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-comedia-4"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Zootopia</h2>
+                                    <label for="modal-comedia-4" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/ZootopiaOficialPoster.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Animação, Comédia, Aventura</div>
+                                        <p class="modal-sinopse">Em uma cidade de animais antropomórficos, uma coelha policial recém-chegada e uma raposa trapaceira precisam trabalhar juntas para desvendar uma conspiração misteriosa.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-comedia-5" class="modal-toggle">
+                        <label for="modal-comedia-5" class="card">
+                            <img src="imG/brooklyn nine nine.jpg" alt="Brooklyn nine-nine">
+                            <p>Brooklyn nine-nine</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-comedia-5"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Brooklyn Nine-Nine (Série)</h2>
+                                    <label for="modal-comedia-5" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/brooklyn nine nine.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Comédia, Sitcom</div>
+                                        <p class="modal-sinopse">Um detetive imaturo, mas talentoso, precisa aprender a seguir as regras quando um novo capitão rigoroso assume o comando de seu esquadrão no Brooklyn.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-comedia-6" class="modal-toggle">
+                        <label for="modal-comedia-6" class="card">
+                            <img src="imG/Superbad_Poster.png" alt="Superbad">
+                            <p>Superbad</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-comedia-6"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Superbad - É Hoje</h2>
+                                    <label for="modal-comedia-6" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/Superbad_Poster.png" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Comédia Adolescente</div>
+                                        <p class="modal-sinopse">Dois amigos inseparáveis (Seth e Evan) estão prestes a se formar no colégio e querem ter uma experiência inesquecível de festa antes de ir para faculdades diferentes. O plano envolve conseguir bebidas alcoólicas para uma grande festa.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-comedia-7" class="modal-toggle">
+                        <label for="modal-comedia-7" class="card">
+                            <img src="imG/With_the_zohan.jpg" alt="Zohan: Um agente bom de corte">
+                            <p>Zohan: Um agente bom de corte</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-comedia-7"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Zohan: Um Agente Bom de Corte</h2>
+                                    <label for="modal-comedia-7" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/With_the_zohan.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Comédia</div>
+                                        <p class="modal-sinopse">Um agente secreto israelense finge sua própria morte para poder realizar seu sonho: se tornar um cabeleireiro na cidade de Nova York. Adam Sandler no papel principal.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-comedia-8" class="modal-toggle">
+                        <label for="modal-comedia-8" class="card">
+                            <img src="imG/vizinhança do barulho .webp" alt="Vizinhança do barulho">
+                            <p>Vizinhança do barulho</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-comedia-8"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Vizinhança do Barulho</h2>
+                                    <label for="modal-comedia-8" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/vizinhança do barulho .webp" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Comédia</div>
+                                        <p class="modal-sinopse">Um casal com um bebê recém-nascido se vê em guerra com a fraternidade que se muda para a casa ao lado, liderada por um carismático e festeiro estudante.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-comedia-9" class="modal-toggle">
+                        <label for="modal-comedia-9" class="card">
+                            <img src="imG/ScaryMovie.jpg" alt="Todo mundo em pânico">
+                            <p>Todo mundo em pânico</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-comedia-9"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Todo Mundo em Pânico</h2>
+                                    <label for="modal-comedia-9" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/ScaryMovie.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Comédia, Paródia</div>
+                                        <p class="modal-sinopse">Uma paródia hilária dos filmes de terror mais populares dos anos 90, especialmente Pânico e Eu Sei o que Vocês Fizeram no Verão Passado, misturando sustos e muitas piadas.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-comedia-10" class="modal-toggle">
+                        <label for="modal-comedia-10" class="card">
+                            <img src="imG/images.jfif" alt="Todo Poderoso">
+                            <p>Todo Poderoso</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-comedia-10"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Todo Poderoso</h2>
+                                    <label for="modal-comedia-10" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/images.jfif" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Comédia, Fantasia</div>
+                                        <p class="modal-sinopse">Um repórter de TV frustrado (Jim Carrey) culpa Deus por todos os seus problemas e, como resposta, Deus (Morgan Freeman) lhe oferece seus poderes por uma semana.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>Suspense</h2>
+                <div class="scroll-row">
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-suspense-1" class="modal-toggle">
+                        <label for="modal-suspense-1" class="card">
+                            <img src="imG/Fragmentado.jpg" alt="Fragmentado">
+                            <p>Fragmentado</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-suspense-1"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Fragmentado</h2>
+                                    <label for="modal-suspense-1" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/Fragmentado.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Suspense, Terror Psicológico</div>
+                                        <p class="modal-sinopse">Três adolescentes são sequestradas por Kevin (James McAvoy), um homem que sofre de transtorno dissociativo de identidade, possuindo 23 personalidades diferentes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-suspense-2" class="modal-toggle">
+                        <label for="modal-suspense-2" class="card">
+                            <img src="imG/Get_Out_2017.png" alt="Corra!">
+                            <p>Corra!</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-suspense-2"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Corra!</h2>
+                                    <label for="modal-suspense-2" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/Get_Out_2017.png" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Suspense, Terror</div>
+                                        <p class="modal-sinopse">Um jovem negro visita a família de sua namorada branca em uma casa de campo. No início, ele interpreta o comportamento excessivamente educado da família como tentativas nervosas de lidar com o relacionamento inter-racial, mas logo descobre algo sinistro.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-suspense-3" class="modal-toggle">
+                        <label for="modal-suspense-3" class="card">
+                            <img src="imG/um lugar silencioso.jpg" alt="Um Lugar Silencioso">
+                            <p>Um Lugar Silencioso</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-suspense-3"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Um Lugar Silencioso</h2>
+                                    <label for="modal-suspense-3" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/um lugar silencioso.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Suspense, Terror</div>
+                                        <p class="modal-sinopse">Uma família tenta viver em completo silêncio para se esconder de criaturas misteriosas que caçam pelo som.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-suspense-4" class="modal-toggle">
+                        <label for="modal-suspense-4" class="card">
+                            <img src="imG/invocação do mal .jpg" alt="Invocação do Mal">
+                            <p>Invocação do Mal</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-suspense-4"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Invocação do Mal</h2>
+                                    <label for="modal-suspense-4" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/invocação do mal .jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Terror, Suspense</div>
+                                        <p class="modal-sinopse">Baseado em eventos reais, os renomados investigadores paranormais Ed e Lorraine Warren são chamados para ajudar uma família aterrorizada por uma presença sombria em sua casa de campo.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-suspense-5" class="modal-toggle">
+                        <label for="modal-suspense-5" class="card">
+                            <img src="imG/dexter.jpg" alt="Dexter">
+                            <p>Dexter</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-suspense-5"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Dexter (Série)</h2>
+                                    <label for="modal-suspense-5" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/dexter.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Suspense, Crime</div>
+                                        <p class="modal-sinopse">De dia, ele é um analista forense do Departamento de Polícia de Miami. À noite, ele é um serial killer que caça apenas outros assassinos.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-suspense-6" class="modal-toggle">
+                        <label for="modal-suspense-6" class="card">
+                            <img src="imG/stranger things.jpg" alt="Stranger Things">
+                            <p>Stranger Things</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-suspense-6"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Stranger Things (Série)</h2>
+                                    <label for="modal-suspense-6" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/stranger things.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Ficção Científica, Suspense</div>
+                                        <p class="modal-sinopse">Em uma pequena cidade nos anos 80, um grupo de jovens testemunha forças sobrenaturais e o desaparecimento de seu amigo, enquanto tentam desvendar segredos governamentais.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-suspense-7" class="modal-toggle">
+                        <label for="modal-suspense-7" class="card">
+                            <img src="imG/seven.jpg" alt="Seven">
+                            <p>Seven</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-suspense-7"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Seven: Os Sete Crimes Capitais</h2>
+                                    <label for="modal-suspense-7" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/seven.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Suspense, Crime</div>
+                                        <p class="modal-sinopse">Dois detetives (Brad Pitt e Morgan Freeman) perseguem um serial killer que baseia seus assassinatos nos sete pecados capitais. O tempo se esgota enquanto o assassino se aproxima de concluir seu plano macabro.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-suspense-8" class="modal-toggle">
+                        <label for="modal-suspense-8" class="card">
+                            <img src="imG/os suspeitos .jpg" alt="Os suspeitos">
+                            <p>Os Suspeitos</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-suspense-8"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Os Suspeitos</h2>
+                                    <label for="modal-suspense-8" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/os suspeitos .jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Suspense, Drama</div>
+                                        <p class="modal-sinopse">Após o desaparecimento da filha de um casal, um detetive de polícia investiga o caso, concentrando suas suspeitas no pai (Hugh Jackman) da menina.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-suspense-9" class="modal-toggle">
+                        <label for="modal-suspense-9" class="card">
+                            <img src="imG/fuja.jpg" alt="Fuja">
+                            <p>Fuja</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-suspense-9"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Fuja</h2>
+                                    <label for="modal-suspense-9" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/fuja.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Suspense, Terror</div>
+                                        <p class="modal-sinopse">Uma adolescente, cronicamente doente e confinada à cadeira de rodas, começa a suspeitar que sua mãe (Sarah Paulson) esconde segredos sinistros sobre sua condição.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-suspense-10" class="modal-toggle">
+                        <label for="modal-suspense-10" class="card">
+                            <img src="imG/zodiaco.jfif" alt="zodiaco">
+                            <p>Zodíaco</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-suspense-10"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>Zodíaco</h2>
+                                    <label for="modal-suspense-10" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/zodiaco.jfif" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Suspense, Crime</div>
+                                        <p class="modal-sinopse">Um cartunista, um jornalista e dois detetives se tornam obcecados pela caçada ao notório serial killer do Zodíaco, que aterrorizou a área da Baía de São Francisco nos anos 60 e 70.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-container">
+                        <input type="checkbox" id="modal-suspense-11" class="modal-toggle">
+                        <label for="modal-suspense-11" class="card">
+                            <img src="imG/sexto sentido.jpg" alt="Sexto sentido">
+                            <p>Sexto sentido</p>
+                        </label>
+                        <div class="modal-background">
+                            <label for="modal-suspense-11"></label>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>O Sexto Sentido</h2>
+                                    <label for="modal-suspense-11" class="close-button">X</label>
+                                </div>
+                                <div class="modal-body-details">
+                                    <div class="modal-poster">
+                                        <img src="imG/sexto sentido.jpg" alt="Pôster">
+                                    </div>
+                                    <div class="modal-details">
+                                        <div class="modal-genre">Suspense, Mistério</div>
+                                        <p class="modal-sinopse">Um psicólogo infantil (Bruce Willis) tenta ajudar um garoto de oito anos (Haley Joel Osment) que afirma conseguir ver e conversar com pessoas mortas.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer>
+                © 2025 <span>FlixBox</span> - Seu mundo do cinema.
+            </footer>
+        </div>
+    </div>
+</body>
+</html>
